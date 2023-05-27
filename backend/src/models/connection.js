@@ -8,12 +8,4 @@ const connection = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 });
 
-// const connection = mysql.createPool({
-//   host: 'db',
-//   port: 3306,
-//   user: 'root',
-//   password: 'password',
-//   database: 'StoreManager',
-// });
-
 module.exports = { connection };
