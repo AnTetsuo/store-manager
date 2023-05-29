@@ -1,5 +1,5 @@
 const {
-  intNumSchema,
+  intNumSchema, productSchema,
 } = require('./schemas');
 
 const validateNumber = (param) => {
@@ -9,6 +9,14 @@ const validateNumber = (param) => {
   return ({ type: null, message: '' });
 };
 
+const validateString = (product) => {
+  const { error } = productSchema.validate(product);
+  if (error) return { type: 'INVALID_VALUE', message: error.message };
+
+  return ({ type: null, message: '' });
+};
+
 module.exports = {
   validateNumber,
+  validateString,
 };

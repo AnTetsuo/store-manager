@@ -6,7 +6,7 @@ const getSales = async () => {
     const sales = await salesModel.findAll();
     return { type: null, message: sales };
   } catch (error) {
-    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server Error' };
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
   }
 };
 
@@ -20,7 +20,7 @@ const getSalesById = async (saleId) => {
 
     return { type: null, message: sale };
   } catch (error) {
-    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server Error' };
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
   }
 };
 

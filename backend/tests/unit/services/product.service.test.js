@@ -34,5 +34,32 @@ describe('00 - PRODUCTS - SERVICE ', function () {
       expect(result.message).to.deep.equal('Product not found');
     });
   });
+
+  describe('POST "/"', function () {
+    it('On success - returns an object with type "null", and the product info', async function () {
+      sinon.stub(productsModel, 'insert').resolves([{ insertId: 1 }]);
+      sinon.stub(productsModel, 'findById').resolves({ productId: 1, name: 'Axe"s Axe' });
+
+      const result = await productsService.addProduct({ name: 'Axe"s Axe' });
+      
+      expect(result.type).to.equal(null);
+      expect(result.message).to.deep.equal({ productId: 1, name: 'Axe"s Axe' });
+    });
+
+    describe('On failure', function () {
+      it('name is not of type string', async function () {
+        const result = await productsService.addProduct({ name: 123 });
+
+        expect(result.type).to.equal('INVALID_VALUE');
+        expect(result.message).to.deep.equal('"name" must be a string');
+      });
+      it('name is not 5 characters long', async function () {
+        const result = await productsService.addProduct({ name: 'Axe' });
+
+        expect(result.type).to.equal('INVALID_VALUE');
+        expect(result.message).to.deep.equal('"name" length must be at least 5 characters long');
+      });
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });

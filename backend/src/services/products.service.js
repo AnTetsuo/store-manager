@@ -6,7 +6,7 @@ const getProducts = async () => {
     const products = await productsModel.findAll();
     return { type: null, message: products };
   } catch (error) {
-    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server Error' };
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
   }
 };
 
@@ -20,11 +20,26 @@ const getProductById = async (productId) => {
 
     return { type: null, message: product };
   } catch (error) {
-    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server Error' };
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
+  }
+};
+
+const addProduct = async (product) => {
+  try {
+    const validate = schema.validateString(product);
+    if (validate.type) return validate;
+
+    const addId = await productsModel.insert(product);
+    const added = await productsModel.findById(addId);
+
+    return { type: null, message: added };
+  } catch (error) {
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
   }
 };
 
 module.exports = {
   getProducts,
   getProductById,
+  addProduct,
 };
