@@ -50,13 +50,13 @@ describe('00 - PRODUCTS - SERVICE ', function () {
       it('name is not of type string', async function () {
         const result = await productsService.addProduct({ name: 123 });
 
-        expect(result.type).to.equal('INVALID_VALUE');
+        expect(result.type).to.equal('INVALID_NAME');
         expect(result.message).to.deep.equal('"name" must be a string');
       });
       it('name is not 5 characters long', async function () {
         const result = await productsService.addProduct({ name: 'Axe' });
 
-        expect(result.type).to.equal('INVALID_VALUE');
+        expect(result.type).to.equal('INVALID_NAME');
         expect(result.message).to.deep.equal('"name" length must be at least 5 characters long');
       });
     });

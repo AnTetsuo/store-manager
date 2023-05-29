@@ -11,7 +11,7 @@ const validateNumber = (param) => {
 
 const validateString = (product) => {
   const { error } = productSchema.validate(product);
-  if (error) return { type: 'INVALID_VALUE', message: error.message };
+  if (error) return { type: 'INVALID_NAME', message: error.message };
 
   return ({ type: null, message: '' });
 };

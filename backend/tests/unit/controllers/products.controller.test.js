@@ -78,6 +78,41 @@ describe('00 - PRODUCTS - CONTROLLER', function () {
         expect(res.json).to.have.been.calledWith({ message: '"id" must be a integer number' });
       });
     });
+
+    describe('POST "/"', function () {
+      it('On success - call status 201, and json with the product on Success', async function () {
+        const prep = { productId: 1, name: 'Axe"s Axe' };
+        const res = {};
+        const req = {
+          body: {
+            name: 'Axe"s Axe',
+          },
+        };
+  
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        sinon.stub(productsService, 'addProduct')
+          .resolves({ type: null, message: prep });
+  
+        await productsController.insertProduct(req, res);
+  
+        expect(res.status).to.have.been.calledWith(201);
+        expect(res.json).to.have.been.calledWith(prep);
+      });
+
+      it('On failure - call status 500, and json with the message', async function () {
+        const res = {};
+        const req = {
+          body: { name: 123 },
+        };
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        await productsController.insertProduct(req, res);
+  
+        expect(res.status).to.have.been.calledWith(422);
+        expect(res.json).to.have.been.calledWith({ message: '"name" must be a string' });
+      });
+    });
   });
 
   afterEach(function () { sinon.restore(); });
