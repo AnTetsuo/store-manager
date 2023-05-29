@@ -15,7 +15,7 @@ describe('00 - PRODUCTS - MODEL', function () {
     }); 
   });
 
-  describe('GET /:id', function () {
+  describe('GET "/:id"', function () {
     it('Return a product object with "id" and "name"', async function () {
       sinon.stub(connection, 'execute').resolves([[mocked.productList[0]]]);
 
@@ -29,6 +29,16 @@ describe('00 - PRODUCTS - MODEL', function () {
       const result = await productsModel.findById(1);
 
       expect(result).to.be.deep.equal(undefined);
+    });
+  });
+
+  describe('POST "/"', function () {
+    it('Returns the insertId on the products table', async function () {
+      sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
+
+      const result = await productsModel.insert({ name: 'Axe"s Axe' }); 
+
+      expect(result).to.be.equal(1);
     });
   });
 

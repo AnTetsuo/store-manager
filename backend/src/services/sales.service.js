@@ -2,18 +2,26 @@ const { salesModel } = require('../models');
 const schema = require('./validations/validateSchema');
 
 const getSales = async () => {
-  const sales = await salesModel.findAll();
-  return { type: null, message: sales };
+  try {
+    const sales = await salesModel.findAll();
+    return { type: null, message: sales };
+  } catch (error) {
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server Error' };
+  }
 };
 
 const getSalesById = async (saleId) => {
-  const validate = schema.validateNumber(saleId);
-  if (validate.type) return validate;
+  try {
+    const validate = schema.validateNumber(saleId);
+    if (validate.type) return validate;
 
-  const sale = await salesModel.findById(saleId);
-  if (sale.length === 0) return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
+    const sale = await salesModel.findById(saleId);
+    if (sale.length === 0) return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
 
-  return { type: null, message: sale };
+    return { type: null, message: sale };
+  } catch (error) {
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server Error' };
+  }
 };
 
 module.exports = {

@@ -2,6 +2,7 @@ const errors = new Map();
 
 errors.set('PRODUCT_NOT_FOUND', 404);
 errors.set('SALE_NOT_FOUND', 404);
+errors.set('INTERNAL_SERVER_ERROR', 500);
 
 const mapping = (type) => errors.get(type) || 500;
 
