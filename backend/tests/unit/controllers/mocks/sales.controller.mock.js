@@ -26,6 +26,43 @@ const listById = [
   },
 ];
 
+const requestInsertSale = [
+  {
+    productId: 1,
+    quantity: 2,
+  },
+  {
+    productId: 2,
+    quantity: 2,
+  },
+];
+
+const responseInsertSale = {
+  id: 1,
+  itemsSold: requestInsertSale,
+};
+
+const badRequestAInsertSale = [
+  {
+    productId: 'a',
+    quantity: 2,
+  },
+];
+
+const badRequestBInsertSale = [
+  {
+    productId: 1,
+    quantity: 'w',
+  },
+];
+
+const badRequestCInsertSale = [
+  {
+    productId: 90382,
+    quantity: 'w',
+  },
+];
+
 const resAll = {
   type: null,
   message: listAll,
@@ -39,4 +76,10 @@ const resId = {
 module.exports = {
   resAll,
   resId,
+  requestInsertSale,
+  responseInsertSale,
+  badRequestAInsertSale,
+  badRequestBInsertSale,
+  badRequestCInsertSale,
+
 };

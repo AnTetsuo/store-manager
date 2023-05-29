@@ -1,5 +1,6 @@
 const cc = require('camelcase');
 const { connection } = require('./connection');
+const productsModel = require('./products.model');
 
 const dateById = async (saleId) => {
   const [[date]] = await connection.execute('SELECT * FROM sales WHERE id = ?', [saleId]);
@@ -32,7 +33,37 @@ const findById = async (saleId) => {
   return parsedSales;
 };
 
+const insertTimestamp = async () => {
+  const [{ insertId }] = await connection
+    .execute('INSERT INTO sales (date) VALUES (CURRENT_TIMESTAMP)');
+  return insertId;
+};
+
+const registerQuantitySold = async (relation, saleId) => {
+  await connection.execute(
+    'INSERT INTO sales_products (sale_id, product_id, quantity) VALUES(?, ?, ?)',
+    [saleId, relation.productId, relation.quantity],
+  );
+};
+
+const insertSale = async (items) => {
+  const checkIds = await Promise
+    .all(items.map((item) => productsModel.findById(item.productId)));
+  const isUnd = checkIds.some((item) => item === undefined);
+
+  if (isUnd) return undefined;
+  
+  const saleId = await insertTimestamp();
+
+  await Promise.all(items.map((item) => registerQuantitySold(item, saleId)));
+  const getItemsSold = await findById(saleId);
+  const itemsSold = await Promise
+    .all(getItemsSold.map((item) => ({ productId: item.productId, quantity: item.quantity })));
+  return { id: saleId, itemsSold };
+};
+
 module.exports = {
   findAll,
   findById,
+  insertSale,
 };

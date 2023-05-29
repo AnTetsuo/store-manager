@@ -26,7 +26,49 @@ const listById = [
   },
 ];
 
+const requestInsertSale = [
+  {
+    productId: 1,
+    quantity: 2,
+  },
+  {
+    productId: 2,
+    quantity: 2,
+  },
+];
+
+const invalidIdRequestInsertSale = [
+  {
+    productId: 'a',
+    quantity: 2,
+  },
+  {
+    productId: 2,
+    quantity: 2,
+  },
+];
+
+const invalidQuantityRequestInsertSale = [
+  {
+    productId: 2,
+    quantity: 'a',
+  },
+  {
+    productId: 2,
+    quantity: 2,
+  },
+];
+
+const responseInsertSale = {
+  id: 1,
+  itemsSold: requestInsertSale,
+};
+
 module.exports = {
   listAll,
   listById,
+  requestInsertSale,
+  responseInsertSale,
+  invalidIdRequestInsertSale,
+  invalidQuantityRequestInsertSale,
 };

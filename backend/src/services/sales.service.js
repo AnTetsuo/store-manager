@@ -1,4 +1,4 @@
-const { salesModel } = require('../models');
+const { salesModel, productsModel } = require('../models');
 const schema = require('./validations/validateSchema');
 
 const getSales = async () => {
@@ -24,7 +24,26 @@ const getSalesById = async (saleId) => {
   }
 };
 
+const postSale = async (sales) => {
+  try {
+    const validate = sales.map((sale) => schema.validateSale(sale));
+    const [someIsInvalid] = validate.filter(({ type }) => type === 'INVALID_SALE');
+    if (someIsInvalid) return someIsInvalid;
+
+    const validatePIds = sales.map((sale) => sale.productId);
+    const idsFound = await Promise.all(validatePIds.map((id) => productsModel.findById(id)));
+    const areFound = idsFound.every((id) => id !== undefined);
+    if (!areFound) return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+
+    const addedSale = await salesModel.insertSale(sales);
+    return { type: null, message: addedSale };
+  } catch (error) {
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
+  }
+};
+
 module.exports = {
   getSales,
   getSalesById,
+  postSale,
 };

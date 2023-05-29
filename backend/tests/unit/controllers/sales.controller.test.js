@@ -78,6 +78,57 @@ describe('01 - SALES - CONTROLLER', function () {
         expect(res.json).to.have.been.calledWith({ message: '"id" must be a integer number' });
       });
     });
+
+    describe('POST "/"', function () {
+      it('On succes - call status 201, and json with the id and product(s)', async function () {
+        const res = {};
+        const req = {
+          body: mock.requestInsertSale,
+        };
+
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        sinon.stub(salesService, 'postSale')
+        .resolves({ type: null, message: mock.responseInsertSale });
+        
+        await salesController.insertSale(req, res);
+
+        expect(res.status).to.have.been.calledWith(201);
+        expect(res.json).to.have.been.calledWith(mock.responseInsertSale);
+      });
+
+      it('On failure - call status 422 with accordingly message', async function () {
+        const res = {};
+        const req = {
+          body: mock.badRequestAInsertSale,
+        };
+
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        sinon.stub(salesService, 'postSale')
+        .resolves({ type: 'INVALID_SALE' });
+        
+        await salesController.insertSale(req, res);
+
+        expect(res.status).to.have.been.calledWith(422);
+      });
+
+      it('On failure - call status 404 with accordingly message', async function () {
+        const res = {};
+        const req = {
+          body: mock.badRequestAInsertSale,
+        };
+
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        sinon.stub(salesService, 'postSale')
+        .resolves({ type: 'PRODUCT_NOT_FOUND' });
+        
+        await salesController.insertSale(req, res);
+
+        expect(res.status).to.have.been.calledWith(404);
+      });
+    });
   });
 
   afterEach(function () { sinon.restore(); });

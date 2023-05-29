@@ -15,7 +15,16 @@ const viewSaleById = async (req, res) => {
   res.status(200).json(message);
 };
 
+const insertSale = async (req, res) => {
+  const sale = req.body;
+  const { type, message } = await salesService.postSale(sale);
+  if (type) return res.status(mapping(type)).json({ message });
+
+  res.status(201).json(message);
+};
+
 module.exports = {
   viewSaleById,
   viewSalesList,
+  insertSale,
 };
