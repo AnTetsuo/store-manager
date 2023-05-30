@@ -14,6 +14,14 @@ describe('00 - PRODUCTS - SERVICE ', function () {
       expect(result.type).to.equal(null);
       expect(result.message).to.deep.equal(mock.productList);
     });
+    it('It throws if model fails', async function () {
+      sinon.stub(productsModel, 'findAll').resolves().throws();
+
+      const result = await productsService.getProducts();
+
+      expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+      expect(result.message).to.deep.equal('Internal server error');
+    });
   });
 
   describe('GET "/:id"', function () {
@@ -32,6 +40,14 @@ describe('00 - PRODUCTS - SERVICE ', function () {
 
       expect(result.type).to.equal('PRODUCT_NOT_FOUND');
       expect(result.message).to.deep.equal('Product not found');
+    });
+    it('It throws if model fails', async function () {
+      sinon.stub(productsModel, 'findById').resolves().throws();
+
+      const result = await productsService.getProductById(1);
+
+      expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+      expect(result.message).to.deep.equal('Internal server error');
     });
   });
 
@@ -58,6 +74,14 @@ describe('00 - PRODUCTS - SERVICE ', function () {
 
         expect(result.type).to.equal('INVALID_NAME');
         expect(result.message).to.deep.equal('"name" length must be at least 5 characters long');
+      });
+      it('It throws if model fails', async function () {
+        sinon.stub(productsModel, 'insert').resolves().throws();
+  
+        const result = await productsService.addProduct({ name: 'Axe"s Axe' });
+  
+        expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+        expect(result.message).to.deep.equal('Internal server error');
       });
     });
   });
@@ -94,6 +118,14 @@ describe('00 - PRODUCTS - SERVICE ', function () {
 
         expect(patched.type).to.equal('PRODUCT_NOT_FOUND');
         expect(patched.message).to.deep.equal('Product not found');
+      });
+      it('It throws if model fails', async function () {
+        sinon.stub(productsModel, 'putProductInfo').resolves().throws();
+  
+        const result = await productsService.putProduct({ name: 'Axe"s Axe' });
+  
+        expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+        expect(result.message).to.deep.equal('Internal server error');
       });
     });
   });

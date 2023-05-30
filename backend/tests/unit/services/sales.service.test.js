@@ -15,6 +15,14 @@ describe('01 - SALES - SERVICE', function () {
       expect(result.type).to.equal(null);
       expect(result.message).to.deep.equal(mock.listAll);
     });
+    it('It returns type and message informing the server error if DB fails', async function () {
+      sinon.stub(salesModel, 'findAll').resolves().throws();
+
+      const result = await salesService.getSales();
+
+      expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+      expect(result.message).to.deep.equal('Internal server error');
+    });
   });
 
   describe('GET "/:id"', function () {
@@ -42,6 +50,15 @@ describe('01 - SALES - SERVICE', function () {
         expect(result.type).to.equal('INVALID_VALUE');
         expect(result.message).to.deep.equal('"id" must be a integer number');
       });
+
+      it('It returns type and message informing the server error if DB fails', async function () {
+        sinon.stub(salesModel, 'findById').resolves().throws();
+  
+        const result = await salesService.getSalesById(1);
+  
+        expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+        expect(result.message).to.deep.equal('Internal server error');
+      });
     });
   });
 
@@ -65,6 +82,24 @@ describe('01 - SALES - SERVICE', function () {
 
         expect(result.type).to.equal('INVALID_SALE');
         expect(result.message).to.equal('"productId" must be a number');
+      });
+      it('With product not found if productId is not found', async function () {
+        const prod = sinon.stub(productsModel, 'findById');
+        prod.onFirstCall().resolves(undefined);
+        prod.onSecondCall().resolves(undefined);
+
+        const result = await salesService.postSale(mock.requestInsertSale);
+
+        expect(result.type).to.equal('PRODUCT_NOT_FOUND');
+        expect(result.message).to.deep.equal('Product not found');
+      });
+      it('It returns type and message informing the server error if DB fails', async function () {
+        sinon.stub(salesModel, 'findById').resolves().throws();
+  
+        const result = await salesService.postSale(mock.requestInsertSale);
+  
+        expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+        expect(result.message).to.deep.equal('Internal server error');
       });
     });
   });
