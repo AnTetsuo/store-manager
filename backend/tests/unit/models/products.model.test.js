@@ -52,6 +52,16 @@ describe('00 - PRODUCTS - MODEL', function () {
       expect(result).to.equal(1);
     });
   });
+
+  describe('DELETE "/:id"', function () {
+    it('Should return the affectedRows, which should always be 1', async function () {
+      sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+
+      const result = await productsModel.remove(1);
+
+      expect(result).to.equal(1);
+    });
+  });
   afterEach(function () {
     sinon.restore();
   });

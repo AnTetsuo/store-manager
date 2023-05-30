@@ -147,5 +147,36 @@ describe('00 - PRODUCTS - CONTROLLER', function () {
       expect(res.json).to.have.been.calledWith({ message: '"name" must be a string' });
     });
   });
+
+  describe('DELETE "/:id"', function () {
+    it('On success - calls status 201 and json without args', async function () {
+      const res = {};
+      const req = {
+        params: { id: 1 },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'removeProduct')
+      .resolves({ type: null, message: '' });
+      
+      await productsController.deleteProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(204);
+      expect(res.json).to.have.been.calledWith();
+    });
+    it('On failure - calls status and message accordingly', async function () {
+      const res = {};
+      const req = {
+        params: { id: 'invalidId' },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await productsController.deleteProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(500);
+      expect(res.json).to.have.been.calledWith({ message: '"id" must be a integer number' });
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });

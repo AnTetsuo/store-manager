@@ -4,6 +4,8 @@ const { productsModel } = require('../../../src/models');
 const { productsService } = require('../../../src/services');
 const mock = require('./mocks/product.service.mock');
 
+const serverErr = 'Internal server error';
+
 describe('00 - PRODUCTS - SERVICE ', function () {
   describe('GET "/"', function () {
     it('Returns an object with type "null" and a message with the product list', async function () {
@@ -20,7 +22,7 @@ describe('00 - PRODUCTS - SERVICE ', function () {
       const result = await productsService.getProducts();
 
       expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-      expect(result.message).to.deep.equal('Internal server error');
+      expect(result.message).to.deep.equal(serverErr);
     });
   });
 
@@ -47,7 +49,7 @@ describe('00 - PRODUCTS - SERVICE ', function () {
       const result = await productsService.getProductById(1);
 
       expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-      expect(result.message).to.deep.equal('Internal server error');
+      expect(result.message).to.deep.equal(serverErr);
     });
   });
 
@@ -81,7 +83,7 @@ describe('00 - PRODUCTS - SERVICE ', function () {
         const result = await productsService.addProduct({ name: 'Axe"s Axe' });
   
         expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-        expect(result.message).to.deep.equal('Internal server error');
+        expect(result.message).to.deep.equal(serverErr);
       });
     });
   });
@@ -125,7 +127,37 @@ describe('00 - PRODUCTS - SERVICE ', function () {
         const result = await productsService.putProduct({ name: 'Axe"s Axe' });
   
         expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-        expect(result.message).to.deep.equal('Internal server error');
+        expect(result.message).to.deep.equal(serverErr);
+      });
+    });
+  });
+
+  describe('DELETE "/:id"', function () {
+    it('On success - should return type null and empty message', async function () {
+      sinon.stub(productsModel, 'remove').resolves(1);
+      sinon.stub(productsModel, 'findById').resolves({ id: 1, name: 'found' });
+
+      const result = await productsService.removeProduct(1);
+
+      expect(result.type).to.equal(null);
+      expect(result.message).to.equal('');
+    });
+    describe('On failure', function () {
+      it('If id not found should return PRODUCT_NOT_FOUND', async function () {
+        sinon.stub(productsModel, 'findById').resolves(undefined);
+
+        const result = await productsService.removeProduct(1);
+
+        expect(result.type).to.equal('PRODUCT_NOT_FOUND');
+        expect(result.message).to.equal('Product not found');
+      });
+      it('If model error should return INTERNAL_SERVER_ERROR', async function () {
+        sinon.stub(productsModel, 'findById').resolves().throws();
+
+        const result = await productsService.removeProduct(1);
+
+        expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+        expect(result.message).to.equal(serverErr);
       });
     });
   });
