@@ -115,5 +115,37 @@ describe('00 - PRODUCTS - CONTROLLER', function () {
     });
   });
 
+  describe('PUT "/:id"', function () {
+    it('On success - call status 200 and json with the product', async function () {
+      const res = {};
+      const req = {
+        params: { id: 1 },
+        body: { name: 'valid Name' },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'putProduct')
+      .resolves({ type: null, message: { id: 1, name: 'valid Name' } });
+      
+      await productsController.editProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({ id: 1, name: 'valid Name' });
+    });
+    it('On failure - calls the status with the accordingly error', async function () {
+      const res = {};
+      const req = {
+        params: { id: 1 },
+        body: { name: 123 },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await productsController.editProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith({ message: '"name" must be a string' });
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });

@@ -38,8 +38,25 @@ const addProduct = async (product) => {
   }
 };
 
+const putProduct = async (productId, productInfo) => {
+  try {
+    const validate = schema.validateString(productInfo);
+    if (validate.type) return validate;
+
+    const validId = await productsModel.findById(productId);
+    if (!validId) return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+
+    await productsModel.putProductInfo(productId, productInfo);
+    const patchedProduct = await productsModel.findById(productId);
+
+    return { type: null, message: patchedProduct };
+  } catch (error) {
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
+  }
+};
 module.exports = {
   getProducts,
   getProductById,
   addProduct,
+  putProduct,
 };

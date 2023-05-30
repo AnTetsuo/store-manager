@@ -42,6 +42,16 @@ describe('00 - PRODUCTS - MODEL', function () {
     });
   });
 
+  describe('PUT "/:id"', function () {
+    it('Should return 1 when updating a product', async function () {
+      sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+
+      const result = await productsModel.putProductInfo(1, { name: 'Azul' }); 
+      console.log(result);
+
+      expect(result).to.equal(1);
+    });
+  });
   afterEach(function () {
     sinon.restore();
   });

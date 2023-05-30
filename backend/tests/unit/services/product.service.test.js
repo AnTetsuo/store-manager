@@ -61,5 +61,41 @@ describe('00 - PRODUCTS - SERVICE ', function () {
       });
     });
   });
+
+  describe('PUT "/:id"', function () {
+    it('On success - returns an object with type "null", and the product', async function () {
+      const pmStub = sinon.stub(productsModel, 'findById');
+      sinon.stub(productsModel, 'putProductInfo').resolves(1);
+      pmStub.onFirstCall().resolves({ id: 1, name: 'product1' });
+      pmStub.onSecondCall().resolves({ id: 1, name: 'OneProduct' });
+
+      const patched = await productsService.putProduct(1, { name: 'OneProduct' });
+
+      expect(patched.type).to.equal(null);
+      expect(patched.message).to.deep.equal({ id: 1, name: 'OneProduct' });
+    });
+
+    describe('On failure', function () {
+      it('schema validation - invalid type of "name"', async function () {
+        const patched = await productsService.putProduct(1, { name: 123 });
+
+        expect(patched.type).to.equal('INVALID_NAME');
+        expect(patched.message).to.deep.equal('"name" must be a string');
+      });
+      it('schema validation - invalid length of "name"', async function () {
+        const patched = await productsService.putProduct(1, { name: 'ko' });
+
+        expect(patched.type).to.equal('INVALID_NAME');
+        expect(patched.message).to.deep.equal('"name" length must be at least 5 characters long');
+      });
+      it('productId not found', async function () {
+        sinon.stub(productsModel, 'findById').resolves(undefined);
+        const patched = await productsService.putProduct(1, { name: 'Not Found' });
+
+        expect(patched.type).to.equal('PRODUCT_NOT_FOUND');
+        expect(patched.message).to.deep.equal('Product not found');
+      });
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });

@@ -23,8 +23,19 @@ const insertProduct = async (req, res) => {
   res.status(201).json(message);
 };
 
+const editProduct = async (req, res) => {
+  const { id } = req.params;
+  const product = req.body;
+
+  const { type, message } = await productsService.putProduct(id, product);
+  if (type) return res.status(mapping(type)).json({ message });
+
+  res.status(200).json(message);
+};
+
 module.exports = {
   viewProductById,
   viewProductsList,
   insertProduct,
+  editProduct,
 };
