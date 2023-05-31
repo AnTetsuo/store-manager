@@ -131,5 +131,57 @@ describe('01 - SALES - CONTROLLER', function () {
     });
   });
 
+  describe('DELETE "/:id"', function () {
+    it('On success - call status 204', async function () {
+      const res = {};
+      const req = {
+        params: { id: 2 },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(salesService, 'deleteSale')
+        .resolves({ type: null, message: '' });
+
+      await salesController.removeSale(req, res);
+
+      expect(res.status).to.have.been.calledWith(204);
+    });
+    describe('On failuer', function () {
+      it('calls 422 on invalid ID', async function () {
+        const res = {};
+        const req = {
+          params: { id: '2' },
+        };
+
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        sinon.stub(salesService, 'deleteSale')
+          .resolves({ type: 'INVALID_ID', message: '"id" must be a number' });
+
+        await salesController.removeSale(req, res);
+
+        expect(res.status).to.have.been.calledWith(422);
+        expect(res.json).to.have.been.calledWith({ message: '"id" must be a number' });
+      });
+
+      it('call 404 on id not found', async function () {
+        const res = {};
+        const req = {
+          params: { id: 2 },
+        };
+
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        sinon.stub(salesService, 'deleteSale')
+          .resolves({ type: 'SALE_NOT_FOUND', message: 'Sale not found' });
+
+        await salesController.removeSale(req, res);
+
+        expect(res.status).to.have.been.calledWith(404);
+        expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+      });
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });

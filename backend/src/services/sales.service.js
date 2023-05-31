@@ -42,8 +42,25 @@ const postSale = async (sales) => {
   }
 };
 
+const deleteSale = async (saleId) => {
+  try {
+    const validate = schema.validateNumber(saleId);
+    if (validate.type) return validate;
+
+    const sale = await salesModel.dateById(saleId);
+    if (!sale) return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
+
+    await salesModel.remove(saleId);
+
+    return { type: null, message: '' };
+  } catch (error) {
+    return { type: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' };
+  }
+};
+
 module.exports = {
   getSales,
   getSalesById,
   postSale,
+  deleteSale,
 };

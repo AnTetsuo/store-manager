@@ -103,5 +103,41 @@ describe('01 - SALES - SERVICE', function () {
       });
     });
   });
+
+  describe('DELETE "/:id"', function () {
+    it('On success returns type null', async function () {
+      sinon.stub(salesModel, 'dateById').resolves([[{ date: 'something true' }]]);
+      sinon.stub(salesModel, 'remove').resolves([{ affectedRows: 1 }]);
+
+      const result = await salesService.deleteSale(1);
+
+      expect(result.type).to.equal(null);
+      expect(result.message).to.deep.equal('');
+    });
+
+    it('On an invalid Id returns invalidID type', async function () {
+      const result = await salesService.deleteSale('a');
+
+      expect(result.type).to.equal('INVALID_ID');
+      expect(result.message).to.deep.equal('"id" must be a number');
+    });
+
+    it('If id not found return not found type', async function () {
+      sinon.stub(salesModel, 'dateById').resolves(undefined);
+
+      const result = await salesService.deleteSale(1);
+
+      expect(result.type).to.equal('SALE_NOT_FOUND');
+      expect(result.message).to.deep.equal('Sale not found');
+    });
+    it('On db error it throws and returns type and message accordingly', async function () {
+      sinon.stub(salesModel, 'findById').resolves().throws();
+
+      const result = await salesService.deleteSale(1);
+
+      expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+      expect(result.message).to.deep.equal('Internal server error');
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });

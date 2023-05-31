@@ -60,5 +60,14 @@ describe('01 - SALES - MODEL', function () {
     });
   });
 
+  describe('DELETE "/:id"', function () {
+    it('Should return 1', async function () {
+      sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+
+      const result = await salesModel.remove(1);
+
+      expect(result).to.equal(1);
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });
