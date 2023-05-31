@@ -47,8 +47,8 @@ describe('01 - SALES - SERVICE', function () {
       it('returns "INVALID_VALUE" if called with anything besides a number', async function () {
         const result = await salesService.getSalesById('not a num');
 
-        expect(result.type).to.equal('INVALID_VALUE');
-        expect(result.message).to.deep.equal('"id" must be a integer number');
+        expect(result.type).to.equal('INVALID_ID');
+        expect(result.message).to.deep.equal('"id" must be a number');
       });
 
       it('It returns type and message informing the server error if DB fails', async function () {

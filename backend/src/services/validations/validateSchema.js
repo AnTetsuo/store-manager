@@ -1,10 +1,10 @@
 const {
-  intNumSchema, productSchema, RegSaleSchema,
+  productSchema, RegSaleSchema, IdSchema,
 } = require('./schemas');
 
 const validateNumber = (param) => {
-  const { error } = intNumSchema.validate(param);
-  if (error) return { type: 'INVALID_VALUE', message: '"id" must be a integer number' };
+  const { error } = IdSchema.validate({ id: param });
+  if (error) return { type: 'INVALID_ID', message: error.message };
 
   return ({ type: null, message: '' });
 };

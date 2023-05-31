@@ -74,8 +74,8 @@ describe('00 - PRODUCTS - CONTROLLER', function () {
         
         await productsController.viewProductById(req, res);
 
-        expect(res.status).to.have.been.calledWith(500);
-        expect(res.json).to.have.been.calledWith({ message: '"id" must be a integer number' });
+        expect(res.status).to.have.been.calledWith(422);
+        expect(res.json).to.have.been.calledWith({ message: '"id" must be a number' });
       });
     });
 
@@ -174,8 +174,8 @@ describe('00 - PRODUCTS - CONTROLLER', function () {
 
       await productsController.deleteProduct(req, res);
 
-      expect(res.status).to.have.been.calledWith(500);
-      expect(res.json).to.have.been.calledWith({ message: '"id" must be a integer number' });
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith({ message: '"id" must be a number' });
     });
   });
   afterEach(function () { sinon.restore(); });

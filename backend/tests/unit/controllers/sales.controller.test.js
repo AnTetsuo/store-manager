@@ -74,8 +74,8 @@ describe('01 - SALES - CONTROLLER', function () {
         
         await salesController.viewSaleById(req, res);
 
-        expect(res.status).to.have.been.calledWith(500);
-        expect(res.json).to.have.been.calledWith({ message: '"id" must be a integer number' });
+        expect(res.status).to.have.been.calledWith(422);
+        expect(res.json).to.have.been.calledWith({ message: '"id" must be a number' });
       });
     });
 
