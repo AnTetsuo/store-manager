@@ -2,6 +2,8 @@ const errors = new Map();
 
 errors.set('PRODUCT_NOT_FOUND', 404);
 errors.set('SALE_NOT_FOUND', 404);
+errors.set('PRODUCT_NOT_IN_SALE', 404);
+errors.set('INVALID_UPDATE_INFO', 422);
 errors.set('INVALID_NAME', 422);
 errors.set('INVALID_SALE', 422);
 errors.set('INVALID_ID', 422);

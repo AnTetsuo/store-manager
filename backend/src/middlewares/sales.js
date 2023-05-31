@@ -11,6 +11,13 @@ const saleFields = (req, res, next) => {
   next();
 };
 
+const updateFields = (req, res, next) => {
+  if (!('quantity' in req.body)) return res.status(400).json({ message: '"quantity" is required' });
+
+  next();
+};
+
 module.exports = {
   saleFields,
+  updateFields,
 };

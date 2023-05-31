@@ -32,9 +32,20 @@ const removeSale = async (req, res) => {
   res.status(204).json();
 };
 
+const updateQuantity = async (req, res) => {
+  const { saleId, productId } = req.params;
+  const { quantity } = req.body;
+  
+  const { type, message } = await salesService.updateProductQuantity(saleId, productId, quantity);
+  if (type) return res.status(mapping(type)).json({ message });
+
+  res.status(200).json(message);
+};
+
 module.exports = {
   viewSaleById,
   viewSalesList,
   insertSale,
   removeSale,
+  updateQuantity,
 };

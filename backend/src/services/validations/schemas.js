@@ -16,8 +16,15 @@ const productSchema = Joi.object({
   name: stringSchema,
  });
 
+const updateSchema = Joi.object({
+  saleId: intNumSchema,
+  productId: intNumSchema,
+  quantity: intNumSchema,
+});
+
 module.exports = {
   IdSchema,
   productSchema,
   RegSaleSchema,
+  updateSchema,
 };

@@ -5,6 +5,8 @@ const { salesService } = require('../../../src/services');
 const prodMock = require('./mocks/product.service.mock');
 const mock = require('./mocks/sales.service.mock');
 
+const serverErr = 'Internal server error';
+
 describe('01 - SALES - SERVICE', function () {
   describe('GET "/"', function () {
     it('Returns an object with type "null" and a message with the sales list', async function () {
@@ -21,7 +23,7 @@ describe('01 - SALES - SERVICE', function () {
       const result = await salesService.getSales();
 
       expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-      expect(result.message).to.deep.equal('Internal server error');
+      expect(result.message).to.deep.equal(serverErr);
     });
   });
 
@@ -57,7 +59,7 @@ describe('01 - SALES - SERVICE', function () {
         const result = await salesService.getSalesById(1);
   
         expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-        expect(result.message).to.deep.equal('Internal server error');
+        expect(result.message).to.deep.equal(serverErr);
       });
     });
   });
@@ -99,7 +101,7 @@ describe('01 - SALES - SERVICE', function () {
         const result = await salesService.postSale(mock.requestInsertSale);
   
         expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-        expect(result.message).to.deep.equal('Internal server error');
+        expect(result.message).to.deep.equal(serverErr);
       });
     });
   });
@@ -136,7 +138,56 @@ describe('01 - SALES - SERVICE', function () {
       const result = await salesService.deleteSale(1);
 
       expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
-      expect(result.message).to.deep.equal('Internal server error');
+      expect(result.message).to.deep.equal(serverErr);
+    });
+  });
+
+  describe('PUT "/:saleId/products/:productId/quantity"', function () {
+    it('On success - returns type null, and message with the updated qunatity', async function () {
+      sinon.stub(salesModel, 'dateById').resolves({ date: 1 });
+      sinon.stub(salesModel, 'findById').resolves(mock.listById);
+      sinon.stub(salesModel, 'updateProductQuantity').resolves(1);
+
+      const result = await salesService.updateProductQuantity(1, 1, 10);
+
+      expect(result.type).to.equal(null);
+      expect(result.message).to.deep.equal(mock.listById[0]);
+    });
+
+    describe('On failure', function () {
+      it('ProductId not in relation with saleId', async function () {
+        sinon.stub(salesModel, 'dateById').resolves({ date: 1 });
+        sinon.stub(salesModel, 'findById').resolves(mock.listById);
+
+        const result = await salesService.updateProductQuantity(1, 140, 10);
+
+        expect(result.type).to.equal('PRODUCT_NOT_IN_SALE');
+        expect(result.message).to.deep.equal('Product not found in sale');
+      });
+      
+      it('If called with invalid params returns type with error', async function () {
+        const result = await salesService.updateProductQuantity('a', 1, 2);
+        
+        expect(result.type).to.equal('INVALID_UPDATE_INFO');
+        expect(result.message).to.deep.equal('"saleId" must be a number');
+      });
+
+      it('If sale is not found', async function () {
+        sinon.stub(salesModel, 'dateById').resolves(undefined);
+
+        const result = await salesService.updateProductQuantity(1, 2, 3);
+
+        expect(result.type).to.equal('SALE_NOT_FOUND');
+        expect(result.message).to.deep.equal('Sale not found');
+      });
+      it('If connection with DB fails', async function () {
+        sinon.stub(salesModel, 'dateById').resolves().throws();
+
+        const result = await salesService.updateProductQuantity(1, 1, 1);
+
+        expect(result.type).to.equal('INTERNAL_SERVER_ERROR');
+        expect(result.message).to.deep.equal(serverErr);
+      });
     });
   });
   afterEach(function () { sinon.restore(); });

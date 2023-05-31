@@ -69,5 +69,15 @@ describe('01 - SALES - MODEL', function () {
       expect(result).to.equal(1);
     });
   });
+
+  describe('PUT "/:saleId/products/:productId/quantity"', function () {
+    it('On success should return 1', async function () {
+      sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+
+    const result = await salesModel.updateProductQuantity(1, 2, 3);
+
+    expect(result).to.equal(1);
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });

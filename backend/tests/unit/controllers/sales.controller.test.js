@@ -183,5 +183,42 @@ describe('01 - SALES - CONTROLLER', function () {
       });
     });
   });
+
+  describe('PUT "/:saleId/products/:productId/quantity"', function () {
+    it('On success - calls status 200 and the updatedInfo', async function () {
+      const res = {};
+      const req = {
+        params: { saleId: 1, productId: 1 },
+        body: { quantity: 1 },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(salesService, 'updateProductQuantity')
+        .resolves({ type: null, message: { date: 1, saleId: 1, productId: 1, quantity: 1 } });
+
+      await salesController.updateQuantity(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({ date: 1, saleId: 1, productId: 1, quantity: 1 });
+    });
+    it('On failure - call status with the type', async function () {
+      const res = {};
+      const req = {
+        params: { saleId: 1, productId: 1 },
+        body: { quantity: 1 },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(salesService, 'updateProductQuantity')
+        .resolves({ type: 'INVALID_UPDATE_INFO', message: 'ARGS' });
+
+      await salesController.updateQuantity(req, res);
+
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith({ message: 'ARGS' });
+    });
+  });
   afterEach(function () { sinon.restore(); });
 });
