@@ -72,10 +72,24 @@ const removeProduct = async (productId) => {
   }
 };
 
+const queryProducts = async (query) => {
+  try {
+    const list = await productsModel.findAll();
+    if (!query) return { type: null, message: list };
+
+    const filtered = list.filter(({ name }) => name.includes(query));
+
+    return { type: null, message: filtered };
+    } catch (error) {
+    return { type: 'INTERNAL_SERVER_ERROR', message: serverErr };
+  }
+};
+
 module.exports = {
   getProducts,
   getProductById,
   addProduct,
   putProduct,
   removeProduct,
+  queryProducts,
 };
