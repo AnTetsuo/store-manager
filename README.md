@@ -119,6 +119,6 @@ Utilizando uma arquitetura em camadas (Model, Service e Controller) a aplicaçã
 
 <p align="center">
 <font size=2>
-Importante! Os arquivos de minha autoria estão  <code>'./backend/src'</code> e <code> './backend/tests</code> outros arquivos, como os responsáveis pela migrations e seeders do serviço store_manager_db no diretŕoio <code>'./sql'</code> são de autoria da Trybe
+Importante! Os arquivos de minha autoria estão nos diretórios <code>'./backend/src'</code> e <code> './backend/tests</code> outros arquivos, como os responsáveis pela migrations e seeders do serviço store_manager_db que estão no diretório <code>'./sql'</code> são de autoria da Trybe
 </font size=2>
 </p>
